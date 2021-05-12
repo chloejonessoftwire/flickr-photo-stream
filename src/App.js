@@ -3,6 +3,7 @@ import logo from './logo.svg';
 import './App.css';
 
 
+
 class App extends Component {
   constructor(){
     super();
@@ -12,25 +13,40 @@ class App extends Component {
   }
 
   componentDidMount(){
-    // fetch('https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key='+process.env.REACT_APP_API_KEY+'&tags=bakewell&per_page=10&page=1&format=json&nojsoncallback=1&safe_search=1')
-    fetch('https://api.flickr.com/services/feeds/photos_public.gne?format=json', {
-      mode: 'no-cors',
-      method: "post",
-      headers: {
-           "Content-Type": "application/json"
-      }})
+    fetch('https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key='+process.env.REACT_APP_API_KEY+'&format=json&lang?en&safe_search=1&tags=derbyshire&extras=owner_name,url_s,url_m,url_l,date_taken,description,tags&nojsoncallback=1')
     .then(function(response){
       return response.json();
     })
     .then(function(data){
       let picArray = data.photos.photo.map((pic) => {
         var title =pic.title;
-        var srcPath = 'https://farm'+pic.farm+'.staticflickr.com/'+pic.server+'/'+pic.id+'_'+pic.secret+'.jpg';
+        var media = 'https://farm'+pic.farm+'.staticflickr.com/'+pic.server+'/'+pic.id+'_'+pic.secret+'.jpg';
+        var date= new Date(pic.datetaken).toLocaleDateString('en-GB', {weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'});
+        var time = new Date(pic.datetaken).toLocaleTimeString('en-GB',{ hour: 'numeric',minute: 'numeric', hour12: true });
+        var author = pic.ownername;
+        if (pic.tags==''){
+          var tags = ''
+        }
+        else{
+          var tags=(pic.tags.split(' ')).join(', #');
+        }
+        var link = 'https://www.flickr.com/photos/'+pic.owner+'/'+pic.id+'/';
+        var author_link='https://www.flickr.com/photos/'+pic.owner+'/';
+
         return(
-          <div>
-            <img alt="dogs" src={srcPath}></img>
-            <p> {title}</p>
-          </div>
+          <div class='image-post'>
+            <img class='image' src={media} alt={title}/>
+            <div class='title-author'>
+              <h3 class='title'> <a href={link} target='_blank'>{title} </a></h3>
+              <h3 class='author'> by <a href={author_link} target="_blank">{author}</a></h3>
+            </div>
+            <div class='description'>
+              <p> Posted on: {date} at {time}. </p>
+            </div>
+            <div class='tags'> 
+                <p> Tags:  #{tags}</p>
+            </div>
+           </div>
           
         )
       })
@@ -40,15 +56,28 @@ class App extends Component {
 
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
+
+      <body id='home'>
+        <div>
+          <div class='header'>
+            <h1>Flickr Photo Stream</h1>
+            <h4> by Chloe Jones</h4>
+          </div>
+        {/* <div class='search-bar'>
+          <form class="form-inline my-2 my-lg-0">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search flickr for photos" aria-label="Search">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+          </form>
+        </div> */}
+          <br/>
+          <div class='grid-container'>
           {this.state.pictures}
-        </p>
-      </div>
+          </div>
+          <div class='footer'>
+            <img class='footer-image' src='https://peakdistrictwalks.net/wp-content/uploads/2020/06/Bamford-Edge-Peak-District-70.jpg'/>
+          </div>
+        </div>
+      </body>
     );
   }
 }

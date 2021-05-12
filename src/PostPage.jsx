@@ -1,5 +1,6 @@
 
 import Post from './Post.jsx';
+import './Fonts.css'
 import './App.css';
 import { useEffect, useState } from 'react';
 
