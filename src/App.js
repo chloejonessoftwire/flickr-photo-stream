@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
-
-
 class App extends Component {
   constructor(){
     super();
@@ -52,13 +50,16 @@ class App extends Component {
       })
       this.setState({pictures: picArray});
     }.bind(this))
+    .catch((err) => {
+      console.log(err)
+      })
   }
 
   render() {
     return (
 
       <body id='home'>
-        <div>
+        <div data-testid='content'> 
           <div class='header'>
             <h1>Flickr Photo Stream</h1>
             <h4> by Chloe Jones</h4>
