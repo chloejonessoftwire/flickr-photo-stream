@@ -1,28 +1,95 @@
+    /* eslint-env jquery */
+
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
+var $ = require( "jquery" );
+
+class Photo extends Component {
+  render() {
+    return (
+      <div class='image-post'>
+        <img class='image' src={this.props.photo.media} alt={this.props.photo.title}/>
+        <div class='title-author'>
+          <h3 class='title'> <a href={this.props.photo.link} target='_blank'>{this.props.photo.title} </a></h3>
+          <h3 class='author'> by <a href={this.props.photo.author_link} target="_blank">{this.props.photo.author}</a></h3>
+        </div>
+        <div class='description'>
+          <p> Posted on: {this.props.photo.date} at {this.props.photo.time}. </p>
+        </div>
+        <div class='tags'> 
+            <p> Tags:  #{this.props.photo.tags}</p>
+        </div>
+     </div>
+    )
+  }
+}
+function isScrolledIntoView(elem)
+  {
+    var docViewTop = $(window).scrollTop();
+    var docViewBottom = docViewTop + $(window).height();
+
+    var elemTop = $(elem).offset().top;
+    var elemBottom = elemTop + $(elem).height();
+
+    return ((elemBottom <= docViewBottom) && (elemTop >= docViewTop));
+  }
 
 class App extends Component {
-  constructor(){
-    super();
+  constructor(props){
+    super(props);
+
     this.state = {
       pictures: [],
+      page: 1,
+      loading: false
     };
   }
 
-  componentDidMount(){
-    fetch('https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key='+process.env.REACT_APP_API_KEY+'&format=json&lang?en&safe_search=1&tags=derbyshire&extras=owner_name,url_s,url_m,url_l,date_taken,description,tags&nojsoncallback=1')
+  componentDidMount = () => {
+    window.addEventListener('scroll', this.infiniteScroll);
+    this.fetchData(this.state.page);
+    this.setState({loading: true})
+  }
+  
+  infiniteScroll = () => {
+    $(window).scroll(function() {
+      if (this.state.loading == true) return;
+      if($(window).scrollTop() + $(window).height() > $(document).height() - 600) {
+          // alert("near bottom!");
+          console.log('reached end');
+          let newPage = this.state.page;
+          console.log(this.state.page);
+          newPage++;
+            this.setState({
+                page: newPage
+            });
+          this.fetchData(newPage);
+          console.log(this.setState.page)
+      }
+   }.bind(this));
+  }
+  
+
+   fetchData = (pageNumber) => {
+     console.log('executed fetch data')
+    let url = 'https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key='+process.env.REACT_APP_API_KEY+'&format=json&page='+pageNumber+'&lang?en&safe_search=1&tags=derbyshire&extras=owner_name,url_s,url_m,url_l,date_taken,description,tags&nojsoncallback=1';
+    this.setState({
+      loading: true
+    });
+    fetch(url)
     .then(function(response){
       return response.json();
     })
     .then(function(data){
-      let picArray = data.photos.photo.map((pic) => {
-        var title =pic.title;
+      let pictures=[]
+      data.photos.photo.map((pic) => {
+      
+        var title = pic.title;
         var media = 'https://farm'+pic.farm+'.staticflickr.com/'+pic.server+'/'+pic.id+'_'+pic.secret+'.jpg';
         var date= new Date(pic.datetaken).toLocaleDateString('en-GB', {weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'});
         var time = new Date(pic.datetaken).toLocaleTimeString('en-GB',{ hour: 'numeric',minute: 'numeric', hour12: true });
         var author = pic.ownername;
-        if (pic.tags==''){
+        if (pic.tags===''){
           var tags = ''
         }
         else{
@@ -31,30 +98,30 @@ class App extends Component {
         var link = 'https://www.flickr.com/photos/'+pic.owner+'/'+pic.id+'/';
         var author_link='https://www.flickr.com/photos/'+pic.owner+'/';
 
-        return(
-          <div class='image-post'>
-            <img class='image' src={media} alt={title}/>
-            <div class='title-author'>
-              <h3 class='title'> <a href={link} target='_blank'>{title} </a></h3>
-              <h3 class='author'> by <a href={author_link} target="_blank">{author}</a></h3>
-            </div>
-            <div class='description'>
-              <p> Posted on: {date} at {time}. </p>
-            </div>
-            <div class='tags'> 
-                <p> Tags:  #{tags}</p>
-            </div>
-           </div>
-          
-        )
+        var pic ={
+          title: title,
+          media: media,
+          date: date,
+          time: time, 
+          author: author,
+          tags: tags,
+          link: link,
+          author_link: author_link
+        }
+        pictures.push(pic);
       })
-      this.setState({pictures: picArray});
+      this.setState({
+        pictures: [...this.state.pictures,...pictures]
+      });
+      this.setState({
+        loading:false
+      })
     }.bind(this))
     .catch((err) => {
       console.log(err)
-      })
+      });
   }
-
+    
   render() {
     return (
 
@@ -72,9 +139,9 @@ class App extends Component {
         </div> */}
           <br/>
           <div class='grid-container'>
-          {this.state.pictures}
+          {this.state.pictures.map((photodata) => (<Photo photo={photodata} /> ))}
           </div>
-          <div class='footer'>
+          <div class='footer' id='footer'>
             <img class='footer-image' src='https://peakdistrictwalks.net/wp-content/uploads/2020/06/Bamford-Edge-Peak-District-70.jpg'/>
           </div>
         </div>
