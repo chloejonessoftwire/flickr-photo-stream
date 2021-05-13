@@ -59,7 +59,7 @@ class App extends Component {
     return (
 
       <body id='home'>
-        <div>
+        <div data-testid='content'> 
           <div class='header'>
             <h1>Flickr Photo Stream</h1>
             <h4> by Chloe Jones</h4>
