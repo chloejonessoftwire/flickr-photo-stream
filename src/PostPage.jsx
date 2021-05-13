@@ -13,24 +13,13 @@ function PostPage() {
   .then((response) => {
     console.log(response.data.items);
     setMyData(response.data);
-    // this.setState({
-    //     items: response.data.items
-    // })
+
   })
   .catch((err) => {
   console.log(err)
   })
 
-    // useEffect(() => {
-    // fetch("https://api.flickr.com/services/feeds/photos_public.gne?format=json", {async: true, crossDomain:}).then(response => response.json()).then(data => {
-    //   console.log(data)  
-    //   setMyData(data)
 
-    
-    // })
-
-//   }, []);
-  
   if (!myData) {
     return (<div> Waiting for data </div>)
   }
