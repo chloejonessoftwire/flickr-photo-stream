@@ -7,7 +7,7 @@ var $ = require("jquery");
 class Photo extends Component {
   render() {
     return (
-      <div class='image-post'>
+      <div class='image-post' data-testid='image-post'>
         <img class='image' src={this.props.photo.media} alt={this.props.photo.title} />
         <div class='title-author'>
           <h3 class='title'> <a href={this.props.photo.link} target='_blank'>{this.props.photo.title} </a></h3>
@@ -16,7 +16,7 @@ class Photo extends Component {
         <div class='description'>
           <p> Posted on: {this.props.photo.date} at {this.props.photo.time}. </p>
         </div>
-        <div class='tags'>
+        <div class='tags'  >
           <p>{this.props.photo.tags}</p>
         </div>
       </div>
