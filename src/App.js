@@ -45,7 +45,7 @@ class App extends Component {
   infiniteScroll = () => {
     $(window).scroll(function () {
       if (this.state.loading == true) return;
-      if ($(window).scrollTop() + $(window).height() > $(document).height() - 600) {
+      if ($(window).scrollTop() + $(window).height() > $(document).height() - 800) {
         let newPage = this.state.page;
         newPage++;
         this.setState({
@@ -187,9 +187,9 @@ class App extends Component {
             <h1>Flickr Photo Stream</h1>
             <h4> by Chloe Jones</h4>
           </div>
-          <div class='search-bar'>
+          <div class='search-bar' >
             <form class="form-inline my-2 my-lg-0" onSubmit={this.mySubmitHandler}>
-              <input class="form-control mr-sm-2" type="search" placeholder="Search photos" aria-label="Search" onChange={this.myChangeHandler} />
+              <input class="form-control mr-sm-2" data-testid='search-bar-input' type="search" placeholder="Search photos" aria-label="Search" onChange={this.myChangeHandler} />
               <button class="btn btn-outline-success my-2 my-sm-0" type="submit" >Search</button>
             </form>
           </div>
