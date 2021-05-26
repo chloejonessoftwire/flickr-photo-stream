@@ -1,9 +1,8 @@
-import { fireEvent, render, waitFor, screen, toBeTruthy, getByTestId} from '@testing-library/react';
+import { fireEvent, render, waitFor, screen, toBeTruthy, getByTestId, cleanup} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {shallow} from 'enzyme';
 import App from './App';
 import React from 'react';
-import waitUntil from 'async-wait-until';
 
 
 
@@ -40,38 +39,21 @@ describe('Unit Tests for App', () => {
     await waitFor(() => expect(screen.findByTestId('image-post')).toBeInTheDocument);
     })
 
-  test('Search bar input should change state', () => {
-    const handleChange = jest.fn();
-    const wrapper = shallow(<App/>);
+  test('Search bar input should change state and load new pages', async () => {
     const {getAllByTestId} = render(<App/>)
     const input = getAllByTestId('search-bar-input')
     fireEvent.change(input[0], {target:{ value: 'arizona'}});
-    // expect(handleChange).toHaveBeenCalled();
-    // now fire your event
-    // fireEvent.change(input, { target: { value: 'arizona' } });
 
-    // fireEvent.change(getAllByTestId('search-bar-input').querySelector('input'), { target: { value: 'arizona' } })
-    expect(wrapper.state('search')).toBe('arizona')
+    render(<App />);
+    await waitFor(() => expect(screen.findByText(/arizona/i)).toBeInTheDocument);
   })
-
-
-  
-  // test('pass valid email to test email input field', () => {
-  //   render(<App />);
- 
-  //   const input = screen.getByTestId("search-bar-input");
-  //   userEvent.type(input, "arizona");
-    
-  //   expect(screen.getByTestId("search-bar-input")).toHaveValue("arizona");
-  //   expect(this.state.search).toBe("arizona");
-  // });
 
 });
 
-describe ('examing jest', () => {
-  it ('render correctly', () =>{
-    const appWrapper = shallow(<App/>).dive();
-    expect (appWrapper).toMatchSnapshot();
-  }
-  )
-})
+afterEach(cleanup)
+ 
+it('should take a snapshot', () => {
+   const { asFragment } = render(<App />)
+   
+   expect(asFragment(<App />)).toMatchSnapshot()
+  })

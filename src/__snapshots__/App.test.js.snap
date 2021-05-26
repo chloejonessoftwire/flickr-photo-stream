@@ -1,0 +1,54 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should take a snapshot 1`] = `
+<DocumentFragment>
+  <div
+    data-testid="content"
+  >
+    <div
+      class="header"
+    >
+      <h1>
+        Flickr Photo Stream
+      </h1>
+      <h4>
+         by Chloe Jones
+      </h4>
+    </div>
+    <div
+      class="search-bar"
+    >
+      <form
+        class="form-inline my-2 my-lg-0"
+      >
+        <input
+          aria-label="Search"
+          class="form-control mr-sm-2"
+          data-testid="search-bar-input"
+          placeholder="Search photos"
+          type="search"
+        />
+        <button
+          class="btn btn-outline-success my-2 my-sm-0"
+          type="submit"
+        >
+          Search
+        </button>
+      </form>
+    </div>
+    <br />
+    <div
+      class="grid-container"
+    />
+    <div
+      class="footer"
+      id="footer"
+    >
+      <img
+        class="footer-image"
+        src="https://peakdistrictwalks.net/wp-content/uploads/2020/06/Bamford-Edge-Peak-District-70.jpg"
+      />
+    </div>
+  </div>
+</DocumentFragment>
+`;
